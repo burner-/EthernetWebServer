@@ -17,10 +17,18 @@ public:
         if (_method != HTTP_ANY && _method != requestMethod)
             return false;
 
-        if (requestUri != _uri)
-            return false;
+        if (requestUri == _uri)
+            return true;
 
-        return true;
+        if (_uri.endsWith("/*"))
+        {
+            String _uristart = _uri;
+            _uristart.replace("/*","");
+            if (requestUri.startsWith(_uristart))
+                return true;
+        }
+
+        return false;
     }
 
     bool canUpload(String requestUri) override  {
