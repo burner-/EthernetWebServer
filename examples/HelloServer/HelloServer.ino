@@ -1,15 +1,12 @@
 /*
-Simple ESP8266 web server sample for wired connection. 
-Connect Wiznet W5100 to GPIO 12 (MSIO), 13 (MOSI), 14 (CLK) and 15 (CS)
-Some times W5100 can take long time to start serve TCP. If you have problems with connecting to your ESP8266 check ping first. 
-If module does not reply to ping check your wirings. If module reply to ping get cup of coffee and it probably answer also to http after that. 
+Simple Arduino web server sample for wired connection. 
 
-This sample is taken from ESP8266 repository without Licence header information and modified by Tapio Haapala 2016 for ESP8266EthernetWebServer.
+This sample is taken from ESP8266 repository without Licence header information and modified by Tapio Haapala 2016 for EthernetWebServer.
 */
 
 #include <SPI.h>
 #include <Ethernet.h>
-#include <ESP8266EthernetWebServer.h>
+#include <EthernetWebServer.h>
 
 // Enter a MAC address and IP address for your controller below.
 
@@ -19,7 +16,7 @@ byte mac[] = {
 // The IP address will be dependent on your local network:
 IPAddress ip(192, 168, 1, 69);
 
-ESP8266EthernetWebServer server(80);
+EthernetWebServer server(80);
 
 const int led = 13;
 
