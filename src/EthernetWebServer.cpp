@@ -29,7 +29,8 @@
 //#include "FS.h"
 #include "detail/RequestHandlersImpl.h"
 
-//#define DEBUG_ESP_HTTP_SERVER
+//#define DEBUG_ESP_HTTP_SERVER 1
+
 #ifdef DEBUG_ESP_PORT
 #define DEBUG_OUTPUT DEBUG_ESP_PORT
 #else
@@ -168,7 +169,7 @@ void EthernetWebServer::handleClient() {
     }
 
 #ifdef DEBUG_ESP_HTTP_SERVER
-    DEBUG_OUTPUT.println("New client");
+    DEBUG_OUTPUT.println(F("New client"));
 #endif
 
     _currentClient = client;
@@ -186,6 +187,9 @@ void EthernetWebServer::handleClient() {
   if (_currentStatus == HC_WAIT_READ) {
     if (!_currentClient.available()) {
       if (millis() - _statusChange > HTTP_MAX_DATA_WAIT) {
+        #ifdef DEBUG_ESP_HTTP_SERVER
+          DEBUG_OUTPUT.println(F("HTTP_MAX_DATA_WAIT Timeout"));
+        #endif
         _currentClient = EthernetClient();
         _currentStatus = HC_NONE;
       }
@@ -194,6 +198,9 @@ void EthernetWebServer::handleClient() {
     }
 
     if (!_parseRequest(_currentClient)) {
+      #ifdef DEBUG_ESP_HTTP_SERVER
+        DEBUG_OUTPUT.println(F("Unable to parse request"));
+      #endif
       _currentClient = EthernetClient();
       _currentStatus = HC_NONE;
       return;
@@ -203,6 +210,9 @@ void EthernetWebServer::handleClient() {
     _handleRequest();
 
     if (!_currentClient.connected()) {
+      #ifdef DEBUG_ESP_HTTP_SERVER
+        DEBUG_OUTPUT.println(F("Connection closed"));
+      #endif
       _currentClient = EthernetClient();
       _currentStatus = HC_NONE;
       return;
@@ -217,6 +227,10 @@ void EthernetWebServer::handleClient() {
     if (millis() - _statusChange > HTTP_MAX_CLOSE_WAIT) {
       _currentClient = EthernetClient();
       _currentStatus = HC_NONE;
+      #ifdef DEBUG_ESP_HTTP_SERVER
+        DEBUG_OUTPUT.println(F("HTTP_MAX_CLOSE_WAIT Timeout"));
+      #endif
+      yield();
     } else {
       yield();
       return;
@@ -452,14 +466,14 @@ void EthernetWebServer::_handleRequest() {
   bool handled = false;
   if (!_currentHandler){
 #ifdef DEBUG_ESP_HTTP_SERVER
-    DEBUG_OUTPUT.println("request handler not found");
+    DEBUG_OUTPUT.println(F("request handler not found"));
 #endif
   }
   else {
     handled = _currentHandler->handle(*this, _currentMethod, _currentUri);
 #ifdef DEBUG_ESP_HTTP_SERVER
     if (!handled) {
-      DEBUG_OUTPUT.println("request handler failed to handle request");
+      DEBUG_OUTPUT.println(F("request handler failed to handle request"));
     }
 #endif
   }
