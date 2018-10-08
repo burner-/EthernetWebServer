@@ -25,7 +25,7 @@
 #ifndef ETHERNETWEBSERVER_H
 #define ETHERNETWEBSERVER_H
 
-#include <StandardCplusplus.h>
+#include <ArduinoSTL.h>
 #include <functional-vlpp.h>
 #include <functional>
 #include <Ethernet.h>
